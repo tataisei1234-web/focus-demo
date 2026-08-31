@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Focus - 集中力向上勉強サポート</title>
+
+  <!-- PWA & ホーム画面アイコン設定 -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Focus">
+  <meta name="theme-color" content="#0284c7">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ----------------------------------------------------
+       テーマ定義（標準、ダーク、ネオンパープル、ピンク、グリーン）
+       ---------------------------------------------------- */
+    :root {
+      --bg-body: #f1f5f9;
+      --bg-container: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;       /* 通常時：視認性の高い濃い文字 */
+      --text-muted: #475569;      /* 通常時：補足文字 */
+      --border-color: #cbd5e1;
+      --primary-color: #0284c7;
+      --primary-light: #e0f2fe;
+      --primary-hover: #0369a1;
+      --accent-color: #10b981;
+      --bg-header: linear-gradient(135deg, #0284c7, #2563eb);
+      --header-text: #ffffff;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --bg-image: none;
+    }
+
+    body.theme-dark {
+      --bg-body: #0f172a;
+      --bg-container: #1e293b;
+      --bg-card: #0f172a;
+      --text-main: #f8fafc;       /* ダーク時：くっきり見える白文字 */
+      --text-muted: #cbd5e1;      /* ダーク時：明るいグレー */
+      --border-color: #334155;
+      --primary-color: #38bdf8;
+      --primary-light: #1e293b;
+      --primary-hover: #0284c7;
+      --accent-color: #34d399;
+      --bg-header: linear-gradient(135deg, #1e293b, #0f172a);
+      --header-text: #38bdf8;
+      --bg-image: none;
+    }
+
+    /* プレミアムテーマ1: ネオンパープル */
+    body.theme-neon-purple {
+      --bg-body: #0b0813;
+      --bg-container: #170f26;
+      --bg-card: rgba(35, 23, 58, 0.85);
+      --text-main: #ffffff;       /* 紫背景でもしっかり読める白文字 */
+      --text-muted: #e9d5ff;      /* 明るい薄紫文字 */
+      --border-color: #6b21a8;
+      --primary-color: #c084fc;
+      --primary-light: #3b0764;
+      --primary-hover: #a855f7;
+      --accent-color: #22d3ee;
+      --bg-header: linear-gradient(135deg, #4c1d95, #2e1065, #000000);
+      --header-text: #f0abfc;
+      --card-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+      --bg-image: radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.15) 0%, transparent 40%);
+    }
+
+    /* プレミアムテーマ2: ピンク */
+    body.theme-pink {
+      --bg-body: #fff1f2;
+      --bg-container: #fff5f5;
+      --bg-card: #ffffff;
+      --text-main: #881337;
+      --text-muted: #be123c;
+      --border-color: #fecdd3;
+      --primary-color: #fb7185;
+      --primary-light: #ffe4e6;
+      --primary-hover: #e11d48;
+      --accent-color: #f472b6;
+      --bg-header: linear-gradient(135deg, #fb7185, #fda4af);
+      --header-text: #ffffff;
+      --card-shadow: 0 4px 12px rgba(251, 113, 133, 0.15);
+      --bg-image: radial-gradient(circle at 50% 0%, rgba(254, 205, 211, 0.5) 0%, transparent 70%);
+    }
+
+    /* プレミアムテーマ3: グリーン */
+    body.theme-green {
+      --bg-body: #f0fdf4;
+      --bg-container: #f4fbf7;
+      --bg-card: #ffffff;
+      --text-main: #14532d;
+      --text-muted: #15803d;
+      --border-color: #bbf7d0;
+      --primary-color: #16a34a;
+      --primary-light: #dcfce7;
+      --primary-hover: #15803d;
+      --accent-color: #84cc16;
+      --bg-header: linear-gradient(135deg, #16a34a, #059669);
+      --header-text: #ffffff;
+      --card-shadow: 0 4px 10px rgba(22, 163, 74, 0.12);
+      --bg-image: radial-gradient(circle at 90% 10%, rgba(187, 247, 208, 0.6) 0%, transparent 60%);
+    }
+
+    body {
+      background-color: var(--bg-body);
+      background-image: var(--bg-image);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      transition: background 0.4s ease, color 0.4s ease;
+      /* スマホのオーバースクロールによる画面ガタつきを防止 */
+      overscroll-behavior-y: none;
+    }
+
+    #app-container {
+      background-color: var(--bg-container);
+    }
+
+    .app-card {
+      background-color: var(--bg-card);
+      border-color: var(--border-color);
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .bg-header-theme {
+      background: var(--bg-header);
+      color: var(--header-text);
+    }
+
+    /* CSS変数を適用する共通テキストクラス */
+    .txt-main { color: var(--text-main) !important; }
+    .txt-muted { color: var(--text-muted) !important; }
+    .text-theme-primary { color: var(--primary-color); }
+    .bg-theme-primary { background-color: var(--primary-color); }
+    .bg-theme-light { background-color: var(--primary-light); }
+    .border-theme { border-color: var(--border-color); }
+
+    .nav-tab-btn {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-tab-btn.active {
+      color: var(--primary-color);
+      transform: translateY(-2px) scale(1.08);
+      font-weight: 800;
+    }
+    .nav-tab-btn.inactive {
+      color: var(--text-muted);
+      opacity: 0.8;
+      transform: translateY(0) scale(1);
+    }
+    .nav-tab-btn.inactive:hover {
+      opacity: 1;
+    }
+
+    .device-container {
+      transition: max-width 0.3s ease, padding 0.3s ease;
+    }
+
+    /* 横スクロールバー隠し */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* ノッチ・ホームバー等のセーフエリア対応 */
+    .safe-pt {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    .safe-pb {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center h-[100dvh] w-screen overflow-hidden p-0 sm:p-4">
+
+  <!-- PWA インストール誘導バナー -->
+  <div id="pwa-install-banner" class="hidden fixed top-2 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-slate-900 text-white p-3 rounded-2xl shadow-2xl border border-sky-400 z-50 flex justify-between items-center text-xs">
+    <div class="flex items-center space-x-2">
+      <img src="icon-192.png" class="w-8 h-8 rounded-lg">
+      <div>
+        <div class="font-bold">Focusをアプリ化</div>
+        <div class="text-[10px] text-slate-300">ホーム画面に追加してすぐ起動</div>
+      </div>
+    </div>
+    <button id="btn-pwa-install" class="bg-sky-500 hover:bg-sky-400 text-white font-bold px-3 py-1.5 rounded-xl shadow">
+      追加する
+    </button>
+  </div>
+
+  <!-- メインコンテナ（スマホ時は画面全体100dvhにフィット） -->
+  <div id="app-container" class="device-container w-full max-w-md sm:max-w-md md:max-w-xl lg:max-w-2xl h-[100dvh] sm:h-[850px] sm:max-h-[90dvh] sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col relative border-0 sm:border-4 border-slate-300/60">
+    
+    <!-- 画面ヘッダー -->
+    <header class="bg-header-theme p-4 safe-pt flex justify-between items-center shadow-md z-20 flex-shrink-0">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center font-black text-white text-xl shadow-inner border border-white/30">F</div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-wide text-white flex items-center gap-1.5">
+            Focus
+            <span id="device-badge" class="text-[9px] bg-white/20 px-2 py-0.5 rounded-full font-normal opacity-90">スマホ</span>
+          </h1>
+          <p class="text-[10px] text-white/80 font-medium">集中力向上勉強サポート</p>
+        </div>
+      </div>
+      
+      <!-- ステータス表示 & 設定ボタン -->
+      <div class="flex items-center space-x-3">
+        <div class="text-right text-[11px] leading-tight font-bold bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-white/10">
+          <div class="text-amber-300"><i class="fa-solid fa-fire text-amber-400 mr-1"></i>頑張り: <span id="disp-exp">0</span> pt</div>
+          <div class="text-emerald-300"><i class="fa-solid fa-gem text-emerald-400 mr-1"></i>交換: <span id="disp-shop-pt">500</span> pt</div>
+        </div>
+        <button onclick="openSettings()" class="text-white hover:opacity-80 text-xl p-1.5 focus:outline-none transition">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- メインコンテンツエリア（下部ナビの高さ分だけ余白を動的に確保） -->
+    <main id="app-content" class="flex-1 overflow-y-auto p-4 pb-20">
+      
+      <!-- ONBOARDING: 初期設定 -->
+      <section id="screen-onboarding" class="space-y-6 pt-6">
+        <div class="text-center space-y-3">
+          <div id="onboarding-avatar" class="w-20 h-20 bg-theme-light text-theme-primary rounded-full flex items-center justify-center mx-auto text-4xl shadow-md border-2 border-theme">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <h2 class="text-2xl font-black txt-main">Focusへようこそ！</h2>
+          <p class="text-xs txt-muted font-bold">高校生の集中力切れをAIテクノロジーで解決します</p>
+        </div>
+
+        <form onsubmit="completeOnboarding(event)" class="app-card border rounded-2xl p-5 space-y-4 shadow-md">
+          <div>
+            <label class="block text-xs font-bold mb-1.5 txt-main">ニックネーム / ユーザー名</label>
+            <input type="text" id="input-name" required placeholder="例：いさご" class="w-full p-3 border border-theme rounded-xl text-sm bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 font-medium">
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1.5 txt-main">特に克服したい苦手科目</label>
+            <select id="input-subject" class="w-full p-3 border border-theme rounded-xl text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-400 font-medium">
+              <option value="数学">数学</option>
+              <option value="英語">英語</option>
+              <option value="理科">理科</option>
+              <option value="社会">社会</option>
+              <option value="国語">国語</option>
+              <option value="情報・プログラミング">情報・プログラミング</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1.5 txt-main">今学期の目標 / 志望校や資格</label>
+            <input type="text" id="input-goal" placeholder="例：期末テストで80点以上・英検2級合格" class="w-full p-3 border border-theme rounded-xl text-sm bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 font-medium">
+          </div>
+          <button type="submit" class="w-full bg-theme-primary text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-90 transition text-sm">
+            AI専用コーチを作成してスタート
+          </button>
+        </form>
+      </section>
+
+      <!-- TAB 1: HOME (ホーム) -->
+      <section id="screen-home" class="hidden space-y-4">
+        <!-- 勉強タイマー -->
+        <div class="app-card border rounded-2xl p-4 shadow-sm text-center space-y-3">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-theme-primary"><i class="fa-solid fa-stopwatch mr-1"></i>集中ポモドーロタイマー</span>
+            <span class="text-xs text-amber-500 font-bold"><i class="fa-solid fa-coins mr-1"></i>達成で +100pt</span>
+          </div>
+          <div class="text-4xl font-extrabold tracking-tight font-mono py-1 txt-main" id="timer-display">25:00</div>
+          <div class="flex justify-center space-x-2">
+            <button id="btn-timer-start" onclick="toggleTimer()" class="bg-theme-primary text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow hover:opacity-90 transition">
+              学習スタート
+            </button>
+            <button onclick="resetTimer()" class="border border-theme txt-main text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-white/10 transition">
+              リセット
+            </button>
+          </div>
+        </div>
+
+        <!-- AIコーチメッセージ -->
+        <div class="app-card border rounded-2xl p-4 shadow-sm flex items-start space-x-3.5">
+          <div id="home-ai-icon" class="w-11 h-11 bg-theme-primary text-white rounded-full flex items-center justify-center flex-shrink-0 text-xl shadow">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div class="flex-1 space-y-1">
+            <div class="flex justify-between items-center">
+              <h3 class="text-xs font-bold text-theme-primary">AIコーチからのひとこと</h3>
+              <span class="text-[10px] txt-muted font-bold" id="current-date-text">今日</span>
+            </div>
+            <p id="coach-message" class="text-xs leading-relaxed font-bold txt-main">
+              「今日も一緒に頑張ろう！勉強して頑張りポイントをどんどん貯めてね！」
+            </p>
+          </div>
+        </div>
+
+        <!-- 本日のスケジュールのサマリー -->
+        <div class="app-card border rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold txt-main flex items-center gap-1.5">
+              <i class="fa-solid fa-calendar-check text-theme-primary"></i>
+              本日の学習タスク
+            </h3>
+            <button onclick="switchTab('schedule')" class="text-[11px] text-theme-primary font-bold hover:underline">
+              カレンダー管理へ <i class="fa-solid fa-chevron-right text-[9px]"></i>
+            </button>
+          </div>
+          <div id="home-schedule-preview" class="space-y-2">
+            <!-- JSで動的描画 -->
+          </div>
+        </div>
+
+        <!-- カメラ解析クイックボタン -->
+        <button onclick="switchTab('scan')" class="w-full bg-theme-light border-2 border-dashed border-theme rounded-2xl p-4 text-theme-primary font-bold flex items-center justify-center space-x-3 shadow-sm hover:opacity-90 transition">
+          <i class="fa-solid fa-camera text-2xl"></i>
+          <div class="text-left">
+            <div class="text-xs font-extrabold txt-main">わからない問題をカメラ撮影</div>
+            <div class="text-[10px] txt-muted font-bold">Gemini AIが個別ステップで解説＆誤答分析</div>
+          </div>
+        </button>
+      </section>
+
+      <!-- TAB 2: SCAN -->
+      <section id="screen-scan" class="hidden space-y-4">
+        <div>
+          <h2 class="text-base font-bold txt-main">問題スキャン＆Gemini AI解析</h2>
+          <p class="text-[11px] txt-muted font-bold">教科書や問題集をカメラで撮って送信すると、解き方とポイントを瞬時にAIが分析します。</p>
+        </div>
+        
+        <div class="app-card border rounded-2xl p-4 text-center space-y-3">
+          <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleImageSelect(event)">
+          
+          <div id="image-preview-box" class="w-full h-52 bg-slate-800/20 rounded-xl border-2 border-dashed border-theme flex flex-col items-center justify-center overflow-hidden relative">
+            <img id="image-preview" class="hidden w-full h-full object-contain">
+            <div id="preview-placeholder" class="text-center p-4">
+              <i class="fa-solid fa-camera text-4xl text-theme-primary mb-2 opacity-80"></i>
+              <p class="text-xs txt-muted font-bold">問題を撮影するか、端末から画像を選択</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="document.getElementById('camera-input').click()" class="bg-theme-light border border-theme text-theme-primary text-xs font-bold py-2.5 rounded-xl shadow-sm hover:opacity-90">
+              <i class="fa-solid fa-images mr-1"></i>画像を選択/撮影
+            </button>
+            <button onclick="analyzeProblemWithGemini()" class="bg-theme-primary text-white text-xs font-bold py-2.5 rounded-xl shadow hover:opacity-90">
+              <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Geminiで解析
+            </button>
+          </div>
+        </div>
+
+        <!-- AI解析結果表示 -->
+        <div id="scan-result" class="hidden app-card border rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between border-b border-theme pb-2">
+            <div class="flex items-center space-x-2 text-emerald-500 text-xs font-bold">
+              <i class="fa-solid fa-sparkles"></i>
+              <span>Gemini AI による解答・解説</span>
+            </div>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">+50pt 獲得</span>
+          </div>
+          <div id="ai-response-text" class="text-xs leading-relaxed whitespace-pre-wrap font-bold txt-main"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: AI COACH -->
+      <section id="screen-coach" class="hidden space-y-4">
+        <div>
+          <h2 class="text-base font-bold txt-main flex items-center gap-2">
+            <i class="fa-solid fa-robot text-theme-primary"></i>
+            AI個人コーチ相談
+          </h2>
+          <p class="text-[11px] txt-muted font-bold">勉強法、進路、苦手克服、メンタルケアまでいつでも相談できます。</p>
+        </div>
+
+        <!-- チャットエリアの高さをスマホ表示にフィットするよう柔軟に調整 -->
+        <div id="chat-messages" class="app-card border rounded-2xl p-4 h-[42dvh] sm:h-80 overflow-y-auto space-y-3">
+          <div class="flex items-start space-x-2">
+            <div class="w-8 h-8 rounded-full bg-theme-primary text-white flex items-center justify-center text-sm flex-shrink-0">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="bg-theme-light border border-theme text-xs txt-main font-bold p-3 rounded-2xl max-w-[85%] leading-relaxed">
+              こんにちは！専用AIコーチです。今日の学習計画の作成や、苦手箇所の克服方法など何でも聞いてくださいね！
+            </div>
+          </div>
+        </div>
+
+        <!-- クイック質問 -->
+        <div class="flex gap-2 overflow-x-auto pb-1 text-[11px] no-scrollbar">
+          <button onclick="sendQuickMessage('今日の効率的な勉強計画を提案して！')" class="bg-theme-light border border-theme text-theme-primary px-3 py-1.5 rounded-full whitespace-nowrap font-bold hover:opacity-80 flex-shrink-0">
+            💡 今日の勉強計画を提案
+          </button>
+          <button onclick="sendQuickMessage('集中力が切れた時のリフレッシュ方法は？')" class="bg-theme-light border border-theme text-theme-primary px-3 py-1.5 rounded-full whitespace-nowrap font-bold hover:opacity-80 flex-shrink-0">
+            🔥 集中力アップのコツ
+          </button>
+          <button onclick="sendQuickMessage('暗記が苦手なんだけど良い方法はある？')" class="bg-theme-light border border-theme text-theme-primary px-3 py-1.5 rounded-full whitespace-nowrap font-bold hover:opacity-80 flex-shrink-0">
+            📚 暗記のテクニック
+          </button>
+        </div>
+
+        <!-- チャット入力欄 -->
+        <div class="flex space-x-2">
+          <input type="text" id="chat-input" placeholder="AIコーチに質問・相談を入力..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 p-3 border border-theme rounded-xl text-xs bg-white text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-sky-400">
+          <button onclick="sendChatMessage()" class="bg-theme-primary text-white font-bold px-4 py-3 rounded-xl text-xs shadow hover:opacity-90 flex-shrink-0">
+            送信
+          </button>
+        </div>
+      </section>
+
+      <!-- TAB 4: SCHEDULE -->
+      <section id="screen-schedule" class="hidden space-y-4">
+        <div class="flex justify-between items-end">
+          <div>
+            <h2 class="text-base font-bold txt-main flex items-center gap-2">
+              <i class="fa-solid fa-calendar-days text-theme-primary"></i>
+              学習スケジュール（AI＆共同管理）
+            </h2>
+            <p class="text-[11px] txt-muted font-bold">AI講師が最適な目標を提案し、自分でも自由に予定を追加できます。</p>
+          </div>
+          <button onclick="openAddTaskModal()" class="bg-theme-primary text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow hover:opacity-90 flex-shrink-0">
+            <i class="fa-solid fa-plus mr-1"></i>予定追加
+          </button>
+        </div>
+
+        <!-- カレンダーヘッダー -->
+        <div class="app-card border rounded-2xl p-3 flex justify-between items-center text-xs font-bold txt-main">
+          <button onclick="changeMonth(-1)" class="p-1 hover:text-theme-primary"><i class="fa-solid fa-chevron-left"></i></button>
+          <span id="calendar-month-year">2026年 8月</span>
+          <button onclick="changeMonth(1)" class="p-1 hover:text-theme-primary"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <!-- 日付選択スライダー -->
+        <div class="flex gap-2 overflow-x-auto py-1 text-center no-scrollbar" id="calendar-days-bar">
+          <!-- JSで描画 -->
+        </div>
+
+        <button onclick="generateAISchedule()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-2.5 rounded-xl shadow flex items-center justify-center gap-2 text-xs hover:opacity-90">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          AI講師に今日の勉強スケジュールを自動生成してもらう
+        </button>
+
+        <div class="app-card border rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center border-b border-theme pb-2">
+            <h3 class="text-xs font-bold text-theme-primary" id="selected-date-title">本日の予定一覧</h3>
+            <span class="text-[10px] txt-muted font-bold">チェックでポイントGET!</span>
+          </div>
+          <div id="schedule-task-list" class="space-y-2">
+            <!-- JS描画 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: RANKING -->
+      <section id="screen-ranking" class="hidden space-y-4">
+        <div class="flex justify-between items-end">
+          <div>
+            <h2 class="text-base font-bold txt-main flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-amber-500"></i>
+              月間頑張りランキング
+            </h2>
+            <p class="text-[10px] txt-muted font-bold">毎月1日に全員リセット！勉強した分だけ順位アップ！</p>
+          </div>
+          <span class="text-[10px] bg-rose-500/20 text-rose-400 font-bold px-2 py-1 rounded-full flex-shrink-0">毎月リセット対象</span>
+        </div>
+
+        <div class="bg-header-theme rounded-2xl p-4 text-white flex justify-between items-center shadow-md border border-white/20">
+          <div class="flex items-center space-x-3.5">
+            <span class="text-2xl font-black text-amber-300 drop-shadow" id="my-rank">#-</span>
+            <div>
+              <div class="text-sm font-bold" id="my-rank-name">あなた</div>
+              <div class="text-[10px] opacity-80">今月の頑張りポイント</div>
+            </div>
+          </div>
+          <span class="text-xl font-extrabold" id="my-rank-exp">0 pt</span>
+        </div>
+
+        <div id="ranking-list" class="space-y-2">
+          <!-- JS描画 -->
+        </div>
+      </section>
+
+      <!-- TAB 6: SHOP -->
+      <section id="screen-shop" class="hidden space-y-5">
+        <div>
+          <h2 class="text-base font-bold txt-main flex items-center gap-2">
+            <i class="fa-solid fa-store text-emerald-500"></i>
+            ポイント交換所
+          </h2>
+          <p class="text-[11px] txt-muted font-bold">貯めた交換ポイントでAIアイコンや限定テーマを獲得しよう！</p>
+        </div>
+
+        <!-- 着せ替えテーマ -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-theme-primary flex items-center gap-1.5">
+            <i class="fa-solid fa-palette"></i>
+            プレミアム着せ替えテーマ
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="app-card border rounded-2xl p-3 flex flex-col justify-between space-y-2 relative overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 text-white">
+              <div class="flex items-center space-x-2">
+                <span class="text-lg">🌌</span>
+                <div>
+                  <div class="text-xs font-bold text-purple-300">ネオンパープル</div>
+                  <div class="text-[9px] text-purple-200/70">宇宙・未来デザイン</div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center pt-2">
+                <span class="text-xs font-black text-cyan-300">300 pt</span>
+                <button id="btn-theme-neon" onclick="applyOrBuyTheme('neon-purple', 'ネオンパープル', 300)" class="bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">
+                  適用/購入
+                </button>
+              </div>
+            </div>
+
+            <div class="app-card border rounded-2xl p-3 flex flex-col justify-between space-y-2 relative overflow-hidden bg-gradient-to-br from-rose-100 via-pink-50 to-red-100 text-slate-800">
+              <div class="flex items-center space-x-2">
+                <span class="text-lg">🌸</span>
+                <div>
+                  <div class="text-xs font-bold text-rose-600">ピンク</div>
+                  <div class="text-[9px] text-rose-400">かわいいパステル系</div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center pt-2">
+                <span class="text-xs font-black text-rose-500">300 pt</span>
+                <button id="btn-theme-pink" onclick="applyOrBuyTheme('pink', 'ピンク', 300)" class="bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">
+                  適用/購入
+                </button>
+              </div>
+            </div>
+
+            <div class="app-card border rounded-2xl p-3 flex flex-col justify-between space-y-2 relative overflow-hidden bg-gradient-to-br from-emerald-100 via-green-50 to-teal-100 text-slate-800">
+              <div class="flex items-center space-x-2">
+                <span class="text-lg">🌿</span>
+                <div>
+                  <div class="text-xs font-bold text-emerald-700">グリーン</div>
+                  <div class="text-[9px] text-emerald-500">リラックス自然風</div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center pt-2">
+                <span class="text-xs font-black text-emerald-600">300 pt</span>
+                <button id="btn-theme-green" onclick="applyOrBuyTheme('green', 'グリーン', 300)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">
+                  適用/購入
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AIアイコン変更 -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-theme-primary flex items-center gap-1.5">
+            <i class="fa-solid fa-user-astronaut"></i>
+            AIコーチの見た目アイコン
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="app-card border rounded-xl p-3 flex flex-col items-center text-center space-y-1.5">
+              <div class="w-11 h-11 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xl shadow">
+                <i class="fa-solid fa-user-ninja"></i>
+              </div>
+              <span class="text-xs font-bold txt-main">忍者先生</span>
+              <span class="text-xs font-extrabold text-emerald-500">200 pt</span>
+              <button onclick="buyIcon('忍者先生', 'fa-user-ninja', 'bg-indigo-600', 200)" class="w-full bg-theme-primary text-white text-[10px] font-bold py-1.5 rounded-lg">交換・設定</button>
+            </div>
+
+            <div class="app-card border rounded-xl p-3 flex flex-col items-center text-center space-y-1.5">
+              <div class="w-11 h-11 bg-amber-500 text-white rounded-full flex items-center justify-center text-xl shadow">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <span class="text-xs font-bold txt-main">博士先生</span>
+              <span class="text-xs font-extrabold text-emerald-500">400 pt</span>
+              <button onclick="buyIcon('博士先生', 'fa-graduation-cap', 'bg-amber-500', 400)" class="w-full bg-theme-primary text-white text-[10px] font-bold py-1.5 rounded-lg">交換・設定</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 下部ナビゲーションバー（セーフエリア・固定位置を補正） -->
+    <nav id="bottom-nav" class="hidden app-card border-t absolute bottom-0 w-full flex justify-around items-center p-2 safe-pb z-30 backdrop-blur-md">
+      <button id="nav-btn-home" onclick="switchTab('home')" class="nav-tab-btn active flex flex-col items-center text-[10px]">
+        <i class="fa-solid fa-house text-lg mb-0.5"></i>
+        <span>ホーム</span>
+      </button>
+
+      <button id="nav-btn-scan" onclick="switchTab('scan')" class="nav-tab-btn inactive flex flex-col items-center text-[10px]">
+        <i class="fa-solid fa-camera text-lg mb-0.5"></i>
+        <span>解析</span>
+      </button>
+
+      <button id="nav-btn-coach" onclick="switchTab('coach')" class="nav-tab-btn inactive flex flex-col items-center text-[10px]">
+        <i class="fa-solid fa-comments text-lg mb-0.5"></i>
+        <span>AIコーチ</span>
+      </button>
+
+      <button id="nav-btn-ranking" onclick="switchTab('ranking')" class="nav-tab-btn inactive flex flex-col items-center text-[10px]">
+        <i class="fa-solid fa-trophy text-lg mb-0.5"></i>
+        <span>順位</span>
+      </button>
+
+      <button id="nav-btn-shop" onclick="switchTab('shop')" class="nav-tab-btn inactive flex flex-col items-center text-[10px]">
+        <i class="fa-solid fa-store text-lg mb-0.5"></i>
+        <span>交換所</span>
+      </button>
+    </nav>
+
+    <!-- モーダル: 予定追加 -->
+    <div id="add-task-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+      <div class="app-card border w-full max-w-xs rounded-2xl p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-bold txt-main">学習予定の追加</h3>
+          <button onclick="closeAddTaskModal()" class="txt-muted hover:opacity-80"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold mb-1 txt-main">内容・科目</label>
+            <input type="text" id="task-input-title" placeholder="例：数学 判別式の解法ワーク3P" class="w-full p-2.5 border border-theme rounded-xl text-xs bg-white text-slate-900 font-medium">
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1 txt-main">担当・管理区分</label>
+            <select id="task-input-owner" class="w-full p-2.5 border border-theme rounded-xl text-xs bg-white text-slate-900 font-medium">
+              <option value="user">自分の予定 (ユーザー)</option>
+              <option value="ai">AIコーチからの課題</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="closeAddTaskModal()" class="flex-1 border border-theme txt-main text-xs font-bold py-2 rounded-xl">キャンセル</button>
+          <button onclick="saveNewTask()" class="flex-1 bg-theme-primary text-white text-xs font-bold py-2 rounded-xl shadow">追加する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- モーダル: アプリ設定 -->
+    <div id="settings-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+      <div class="app-card border w-full max-w-xs rounded-2xl p-5 space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-theme pb-2">
+          <h3 class="text-sm font-bold txt-main">アプリ設定</h3>
+          <button onclick="closeSettings()" class="txt-muted hover:opacity-80"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="block text-xs font-bold txt-main">テーマ切替</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setTheme('default')" class="p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white text-slate-800 shadow-sm">ライト（標準）</button>
+            <button onclick="setTheme('dark')" class="p-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm">ダーク（黒）</button>
+          </div>
+        </div>
+
+        <div class="space-y-1 text-[11px] txt-muted font-bold border-t border-theme pt-3">
+          <div>アプリ名: Focus 勉強サポート (完全版)</div>
+          <div>制作: 仙台城南高等学校 科学技術科 3-7</div>
+          <div>砂金柊、石堂泰誠、荒屋翔琉</div>
+        </div>
+
+        <button onclick="closeSettings()" class="w-full bg-theme-primary text-white text-xs font-bold py-2 rounded-xl">閉じる</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const SERVER_URL = 'http://localhost:3000/api/coach';
+
+    let userData = {
+      name: '',
+      subject: '数学',
+      goal: '',
+      expPoints: 0,
+      shopPoints: 500,
+      aiIconClass: 'fa-robot',
+      aiIconBg: 'bg-theme-primary',
+      currentTheme: 'default',
+      purchasedThemes: ['default', 'dark']
+    };
+
+    let tasks = [
+      { id: 1, date: '2026-08-31', title: '【AI提案】苦手な数学の公式復習 15分', owner: 'ai', done: false },
+      { id: 2, date: '2026-08-31', title: '英単語ターゲット 1-50', owner: 'user', done: true }
+    ];
+
+    let rankingData = [
+      { name: 'たろう', exp: 1250 },
+      { name: 'はなこ', exp: 980 },
+      { name: 'けんた', exp: 750 },
+      { name: 'さくら', exp: 420 }
+    ];
+
+    let timerInterval = null;
+    let timerSeconds = 1500;
+    let selectedDateStr = '2026-08-31';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      detectDevice();
+      renderCalendarDays();
+      updateScheduleView();
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
+      document.getElementById('current-date-text').innerText = today.toLocaleDateString('ja-JP', options);
+    });
+
+    function detectDevice() {
+      const isTablet = window.innerWidth >= 768;
+      const badge = document.getElementById('device-badge');
+      if (isTablet) {
+        badge.innerText = 'タブレット (最適化)';
+        badge.className = 'text-[9px] bg-emerald-500/30 text-emerald-200 border border-emerald-400 px-2 py-0.5 rounded-full font-bold';
+      } else {
+        badge.innerText = 'スマホ (標準)';
+      }
+    }
+    window.addEventListener('resize', detectDevice);
+
+    function completeOnboarding(e) {
+      e.preventDefault();
+      userData.name = document.getElementById('input-name').value;
+      userData.subject = document.getElementById('input-subject').value;
+      userData.goal = document.getElementById('input-goal').value || '目標達成！';
+
+      document.getElementById('coach-message').innerText = 
+        `「${userData.name}さん！苦手な【${userData.subject}】の克服に向けて、一緒に頑張りましょう！目標：『${userData.goal}』」`;
+
+      document.getElementById('screen-onboarding').classList.add('hidden');
+      document.getElementById('bottom-nav').classList.remove('hidden');
+      updateUI();
+      switchTab('home');
+    }
+
+    function switchTab(tabName) {
+      const screens = ['home', 'scan', 'coach', 'schedule', 'ranking', 'shop'];
+      screens.forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const targetScreen = document.getElementById(`screen-${tabName}`);
+      if (targetScreen) targetScreen.classList.remove('hidden');
+
+      const navTabs = ['home', 'scan', 'coach', 'ranking', 'shop'];
+      navTabs.forEach(tab => {
+        const btn = document.getElementById(`nav-btn-${tab}`);
+        if (btn) {
+          if (tab === tabName) {
+            btn.className = 'nav-tab-btn active flex flex-col items-center text-[10px]';
+          } else {
+            btn.className = 'nav-tab-btn inactive flex flex-col items-center text-[10px]';
+          }
+        }
+      });
+
+      if (tabName === 'ranking') renderRanking();
+      if (tabName === 'home') updateScheduleView();
+    }
+
+    function addPoints(exp, shop) {
+      userData.expPoints += exp;
+      userData.shopPoints += shop;
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById('disp-exp').innerText = userData.expPoints.toLocaleString();
+      document.getElementById('disp-shop-pt').innerText = userData.shopPoints.toLocaleString();
+
+      const iconBox = document.getElementById('home-ai-icon');
+      if (iconBox) {
+        iconBox.className = `w-11 h-11 ${userData.aiIconBg} text-white rounded-full flex items-center justify-center flex-shrink-0 text-xl shadow`;
+        iconBox.innerHTML = `<i class="fa-solid ${userData.aiIconClass}"></i>`;
+      }
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('btn-timer-start');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.innerText = '再開';
+      } else {
+        btn.innerText = '一時停止';
+        timerInterval = setInterval(() => {
+          timerSeconds--;
+          const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+          const s = String(timerSeconds % 60).padStart(2, '0');
+          document.getElementById('timer-display').innerText = `${m}:${s}`;
+          
+          if (timerSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            addPoints(100, 50);
+            alert('🎉 お疲れ様でした！集中学習完了で 頑張り100pt / 交換50pt 獲得しました！');
+            resetTimer();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerSeconds = 1500;
+      document.getElementById('timer-display').innerText = '25:00';
+      document.getElementById('btn-timer-start').innerText = '学習スタート';
+    }
+
+    function handleImageSelect(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = document.getElementById('image-preview');
+          img.src = evt.target.result;
+          img.classList.remove('hidden');
+          document.getElementById('preview-placeholder').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function analyzeProblemWithGemini() {
+      const resultBox = document.getElementById('scan-result');
+      const responseText = document.getElementById('ai-response-text');
+
+      resultBox.classList.remove('hidden');
+      responseText.innerText = 'AIコーチが問題を解析しています...';
+
+      try {
+        const promptText = `高校生の${userData.name}さん（苦手科目:${userData.subject}）に向けて、この問題の解き方を分かりやすくステップ解説してください。`;
+        
+        const res = await fetch(SERVER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: promptText })
+        });
+
+        if (!res.ok) throw new Error('サーバー応答エラー');
+
+        const data = await res.json();
+        responseText.innerText = data.reply || '解析結果が得られませんでした。';
+        addPoints(50, 20);
+
+      } catch (err) {
+        responseText.innerText = 'サーバーとの連携エラーが発生しました。node server.js が実行されているか確認してください。';
+      }
+    }
+
+    function sendQuickMessage(msg) {
+      document.getElementById('chat-input').value = msg;
+      sendChatMessage();
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chatBox = document.getElementById('chat-messages');
+
+      chatBox.innerHTML += `
+        <div class="flex items-start justify-end space-x-2">
+          <div class="bg-theme-primary text-white text-xs font-bold p-3 rounded-2xl max-w-[85%] leading-relaxed shadow-sm">
+            ${text}
+          </div>
+        </div>
+      `;
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const loadingId = 'loading-' + Date.now();
+      chatBox.innerHTML += `
+        <div id="${loadingId}" class="flex items-start space-x-2">
+          <div class="w-8 h-8 rounded-full bg-theme-primary text-white flex items-center justify-center text-sm flex-shrink-0">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div class="bg-theme-light border border-theme text-xs font-bold p-3 rounded-2xl txt-muted">
+            <i class="fa-solid fa-spinner fa-spin mr-1"></i>思考中...
+          </div>
+        </div>
+      `;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        const res = await fetch(SERVER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: `ユーザー:${userData.name}（苦手:${userData.subject}）。質問: ${text}` 
+          })
+        });
+
+        if (!res.ok) throw new Error('サーバーエラー');
+
+        const data = await res.json();
+        document.getElementById(loadingId).remove();
+
+        chatBox.innerHTML += `
+          <div class="flex items-start space-x-2">
+            <div class="w-8 h-8 rounded-full bg-theme-primary text-white flex items-center justify-center text-sm flex-shrink-0">
+              <i class="fa-solid ${userData.aiIconClass}"></i>
+            </div>
+            <div class="bg-theme-light border border-theme text-xs txt-main font-bold p-3 rounded-2xl max-w-[85%] leading-relaxed">
+              ${data.reply}
+            </div>
+          </div>
+        `;
+        addPoints(10, 5);
+
+      } catch (err) {
+        document.getElementById(loadingId).remove();
+        chatBox.innerHTML += `<div class="text-xs text-rose-500 font-bold">サーバー接続エラー。node server.js を確認してください。</div>`;
+      }
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function renderCalendarDays() {
+      const daysBar = document.getElementById('calendar-days-bar');
+      daysBar.innerHTML = '';
+      const days = [
+        { day: '28', week: '金', date: '2026-08-28' },
+        { day: '29', week: '土', date: '2026-08-29' },
+        { day: '30', week: '日', date: '2026-08-30' },
+        { day: '31', week: '月', date: '2026-08-31' },
+        { day: '1', week: '火', date: '2026-09-01' },
+        { day: '2', week: '水', date: '2026-09-02' }
+      ];
+
+      days.forEach(d => {
+        const isSelected = d.date === selectedDateStr;
+        daysBar.innerHTML += `
+          <button onclick="selectDate('${d.date}')" class="flex-1 min-w-[50px] p-2 rounded-xl border ${isSelected ? 'bg-theme-primary text-white border-theme shadow' : 'app-card border-theme txt-main'} text-xs font-bold transition flex-shrink-0">
+            <div class="text-[10px] opacity-80">${d.week}</div>
+            <div class="text-sm font-extrabold">${d.day}</div>
+          </button>
+        `;
+      });
+    }
+
+    function selectDate(dateStr) {
+      selectedDateStr = dateStr;
+      renderCalendarDays();
+      updateScheduleView();
+    }
+
+    function updateScheduleView() {
+      const list = document.getElementById('schedule-task-list');
+      const homePreview = document.getElementById('home-schedule-preview');
+      document.getElementById('selected-date-title').innerText = `${selectedDateStr} の予定`;
+
+      const dayTasks = tasks.filter(t => t.date === selectedDateStr);
+
+      if (dayTasks.length === 0) {
+        list.innerHTML = `<div class="text-xs txt-muted font-bold text-center py-4">予定はありません。「予定追加」や「AI自動生成」をお試しください。</div>`;
+      } else {
+        list.innerHTML = '';
+        dayTasks.forEach(t => {
+          list.innerHTML += `
+            <div class="flex items-center justify-between p-2.5 border border-theme rounded-xl bg-theme-light/40">
+              <div class="flex items-center space-x-2.5">
+                <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="w-4 h-4 text-theme-primary rounded">
+                <span class="text-xs font-bold txt-main ${t.done ? 'line-through opacity-50' : ''}">${t.title}</span>
+              </div>
+              <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${t.owner === 'ai' ? 'bg-purple-500/20 text-purple-300' : 'bg-sky-500/20 text-sky-300'} flex-shrink-0">
+                ${t.owner === 'ai' ? 'AI提案' : '自分'}
+              </span>
+            </div>
+          `;
+        });
+      }
+
+      if (homePreview) {
+        const todayTasks = tasks.filter(t => t.date === '2026-08-31');
+        if (todayTasks.length === 0) {
+          homePreview.innerHTML = `<div class="text-xs txt-muted font-bold">本日の予定はありません</div>`;
+        } else {
+          homePreview.innerHTML = '';
+          todayTasks.forEach(t => {
+            homePreview.innerHTML += `
+              <div class="flex items-center justify-between text-xs p-2 rounded-lg bg-theme-light/60 border border-theme">
+                <span class="txt-main font-bold ${t.done ? 'line-through opacity-50' : ''}">${t.title}</span>
+                <span class="text-[9px] font-bold ${t.done ? 'text-emerald-400' : 'text-amber-400'} flex-shrink-0">${t.done ? '完了' : '未完了'}</span>
+              </div>
+            `;
+          });
+        }
+      }
+    }
+
+    function toggleTask(id) {
+      const t = tasks.find(x => x.id === id);
+      if (t) {
+        t.done = !t.done;
+        if (t.done) addPoints(20, 10);
+        updateScheduleView();
+      }
+    }
+
+    function openAddTaskModal() { document.getElementById('add-task-modal').classList.remove('hidden'); }
+    function closeAddTaskModal() { document.getElementById('add-task-modal').classList.add('hidden'); }
+
+    function saveNewTask() {
+      const title = document.getElementById('task-input-title').value.trim();
+      const owner = document.getElementById('task-input-owner').value;
+      if (!title) return;
+
+      tasks.push({
+        id: Date.now(),
+        date: selectedDateStr,
+        title: title,
+        owner: owner,
+        done: false
+      });
+
+      closeAddTaskModal();
+      document.getElementById('task-input-title').value = '';
+      updateScheduleView();
+    }
+
+    function generateAISchedule() {
+      tasks.push({
+        id: Date.now(),
+        date: selectedDateStr,
+        title: `【AI講師提案】${userData.subject} 基礎問題スキャン＆30分集中演習`,
+        owner: 'ai',
+        done: false
+      });
+      alert('✨ AI講師が本日の学習目標スケジュールを追加しました！');
+      updateScheduleView();
+    }
+
+    function applyOrBuyTheme(themeKey, themeName, cost) {
+      if (userData.purchasedThemes.includes(themeKey)) {
+        setTheme(themeKey);
+        alert(`テーマ【${themeName}】を適用しました！`);
+      } else {
+        if (userData.shopPoints < cost) {
+          alert('交換ポイントが不足しています！タイマーや課題でポイントを貯めてね。');
+          return;
+        }
+        userData.shopPoints -= cost;
+        userData.purchasedThemes.push(themeKey);
+        setTheme(themeKey);
+        alert(`🎉 300ptでテーマ【${themeName}】を獲得・適用しました！`);
+        updateUI();
+      }
+    }
+
+    function setTheme(theme) {
+      document.body.className = '';
+      userData.currentTheme = theme;
+
+      if (theme === 'dark') document.body.classList.add('theme-dark');
+      else if (theme === 'neon-purple') document.body.classList.add('theme-neon-purple');
+      else if (theme === 'pink') document.body.classList.add('theme-pink');
+      else if (theme === 'green') document.body.classList.add('theme-green');
+
+      closeSettings();
+    }
+
+    function buyIcon(name, iconClass, bgClass, cost) {
+      if (userData.shopPoints < cost) {
+        alert('交換ポイントが不足しています！');
+        return;
+      }
+      userData.shopPoints -= cost;
+      userData.aiIconClass = iconClass;
+      userData.aiIconBg = bgClass;
+      alert(`AIコーチのアイコンを【${name}】に変更しました！`);
+      updateUI();
+    }
+
+    function renderRanking() {
+      let allData = [...rankingData, { name: userData.name || 'あなた', exp: userData.expPoints }];
+      allData.sort((a, b) => b.exp - a.exp);
+
+      const listEl = document.getElementById('ranking-list');
+      listEl.innerHTML = '';
+
+      allData.forEach((item, index) => {
+        const rank = index + 1;
+        const isMe = item.name === (userData.name || 'あなた');
+        
+        if (isMe) {
+          document.getElementById('my-rank').innerText = `#${rank}`;
+          document.getElementById('my-rank-name').innerText = item.name;
+          document.getElementById('my-rank-exp').innerText = `${item.exp} pt`;
+        }
+
+        listEl.innerHTML += `
+          <div class="app-card border rounded-xl p-3 flex justify-between items-center ${isMe ? 'ring-2 ring-sky-400' : ''}">
+            <div class="flex items-center space-x-3">
+              <span class="w-6 text-center font-bold text-xs ${rank === 1 ? 'text-amber-400' : rank === 2 ? 'text-slate-300' : rank === 3 ? 'text-amber-600' : ''}">
+                ${rank <= 3 ? '<i class="fa-solid fa-crown text-base"></i>' : rank}
+              </span>
+              <span class="text-xs font-bold txt-main">${item.name}</span>
+            </div>
+            <span class="text-xs font-extrabold text-theme-primary">${item.exp} pt</span>
+          </div>
+        `;
+      });
+    }
+
+    function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+    function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+    let deferredPrompt;
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch((err) => console.log('SW Register Error:', err));
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    const installBtn = document.getElementById('btn-pwa-install');
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            document.getElementById('pwa-install-banner').classList.add('hidden');
+          }
+          deferredPrompt = null;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
